@@ -1,0 +1,49 @@
+---
+title: "Configuration"
+description: "Configure Nexus DB connections and trigger behavior"
+---
+
+Nexus writes events to PostgreSQL and optionally triggers a follow-up endpoint after root-chain completion.
+
+## Database URL
+
+You can set the DB URL in two common ways:
+
+- pass `db_url` directly to `NexusClient` / `PrintingHandler`
+- rely on library config helpers (`get_db_url()` / `set_db_url()`)
+
+```python
+from nexus_library.nexus_core import NexusClient
+
+client = NexusClient(
+    api_key="00000000-0000-0000-0000-000000000000",
+    db_url="postgresql://user:pass@host/db",
+)
+```
+
+## Trigger URL
+
+LangChain tracing can call a trigger endpoint after root chain completion or failure:
+
+- `POST {trigger_url}/catch_route_manual`
+
+The URL is read through `get_trigger_url()`.
+
+## Storage contract
+
+The library expects an `agent_logs` table with at least:
+
+- UUIDs for `run_id`, `user_id`, and optional `parent_run_id`
+- text for `trace_id`, `event_type`, and `name`
+- JSONB fields for `input` and `output`
+- nullable text for `error`
+
+## Security guidance
+
+<Warning>
+  Do not rely on hardcoded credentials in source code for production usage. Prefer environment-driven secrets and managed secret stores.
+</Warning>
+
+- rotate credentials regularly
+- use least-privilege DB roles
+- separate dev and prod storage backends

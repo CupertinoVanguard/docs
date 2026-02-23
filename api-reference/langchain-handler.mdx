@@ -1,0 +1,57 @@
+---
+title: "PrintingHandler"
+description: "Nexus reference for LangChain callback tracing"
+---
+
+## `PrintingHandler(nexus_client, dev_mode=False, session_id=None, db_url=None)`
+
+Callback handler for LangChain event instrumentation.
+
+- `nexus_client`: required `NexusClient` source for `user_id`
+- `dev_mode`: disables root-chain trigger calls when true
+- `session_id`: optional metadata value
+- `db_url`: optional DB override
+
+## Callback hooks implemented
+
+### LLM and chat model
+
+- `on_llm_start`, `on_llm_end`, `on_llm_error`
+- `on_chat_model_start`
+- `on_llm_new_token` (present but not persisted by default)
+
+### Chains
+
+- `on_chain_start`, `on_chain_end`, `on_chain_error`
+- root `on_chain_end` and root `on_chain_error` may trigger `/catch_route_manual`
+
+### Tools
+
+- `on_tool_start`, `on_tool_end`, `on_tool_error`
+
+### Agents
+
+- `on_agent_action`, `on_agent_finish`
+
+### Retrieval and misc
+
+- `on_retriever_start`, `on_retriever_end`, `on_retriever_error`
+- `on_text`
+- `on_retry`
+
+## Event normalization
+
+Incoming callback names are normalized into category-style values before persistence:
+
+- `llm_start` -> `llm`
+- `tool_error` -> `tool`
+- `retriever_end` -> `retriever`
+
+## Persistence behavior
+
+Each callback writes to `agent_logs` with:
+
+- run identifiers and parent linkage
+- normalized event category
+- serialized JSON for `input` and `output`
+- nullable `error` text

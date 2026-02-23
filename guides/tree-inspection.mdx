@@ -1,0 +1,47 @@
+---
+title: "Tree inspection"
+description: "Inspect Nexus stored traces as parent-child execution trees"
+---
+
+Nexus includes helper methods to inspect stored events after they are persisted.
+
+## Fetch events
+
+```python
+events = client.get_all_events()
+```
+
+You can pass a specific `trace_id`:
+
+```python
+events = client.get_all_events(trace_id="your-trace-id")
+```
+
+## Print a visual tree
+
+```python
+client.print_tree_structure()
+```
+
+This prints a terminal tree grouped by `parent_run_id` relationships and colorized by event category.
+
+## Build tree data programmatically
+
+```python
+tree_data = client.build_tree_data_from_events()
+```
+
+Use this when you want custom rendering or downstream processing.
+
+## Get an LLM-friendly tree string
+
+```python
+tree_str = client.get_trace_tree_string()
+```
+
+This returns a structured text representation designed for agent or LLM consumption.
+
+## Notes
+
+- Tree methods rely on persisted rows in `agent_logs`.
+- Call `flush()` before tree inspection when using manual spans.

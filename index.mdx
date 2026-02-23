@@ -1,97 +1,52 @@
 ---
-title: "Introduction"
-description: "Welcome to the new home for your documentation"
+title: "Nexus"
+description: "AI tracing and instrumentation for LangChain and custom Python agents"
 ---
 
-## Setting up
+**Nexus** helps you trace AI execution in two ways:
 
-Get your documentation site up and running in minutes.
+- **Automatic tracing** via a LangChain callback handler.
+- **Manual tracing** via `NexusClient` spans in your own code.
 
-<Card
-  title="Start here"
-  icon="rocket"
-  href="/quickstart"
-  horizontal
->
-  Follow our three step quickstart guide.
-</Card>
+You can log runs, connect parent and child operations, and inspect tree structures from stored traces.
 
-## Make it yours
+## Start here
 
-Design a docs site that looks great and empowers your users.
-
-<Columns cols={2}>
-  <Card
-    title="Edit locally"
-    icon="pen-to-square"
-    href="/development"
-  >
-    Edit your docs locally and preview them in real time.
+<CardGroup cols={2}>
+  <Card title="Quickstart" icon="rocket" href="/quickstart">
+    Install the package and send your first trace.
   </Card>
-  <Card
-    title="Customize your site"
-    icon="palette"
-    href="/essentials/settings"
-  >
-    Customize the design and colors of your site to match your brand.
+  <Card title="Manual tracing" icon="square-code" href="/guides/manual-tracing">
+    Instrument custom Python code with span context managers.
   </Card>
-    <Card
-    title="Set up navigation"
-    icon="map"
-    href="/essentials/navigation"
-  >
-    Organize your docs to help users find what they need and succeed with your product.
+  <Card title="LangChain integration" icon="brain" href="/guides/langchain">
+    Attach `PrintingHandler` to chains, tools, and agents.
   </Card>
-  <Card
-    title="API documentation"
-    icon="terminal"
-    href="/api-reference/introduction"
-  >
-    Auto-generate API documentation from OpenAPI specifications.
+  <Card title="Configuration" icon="sliders" href="/guides/configuration">
+    Configure DB and trigger behavior for your environment.
   </Card>
-</Columns>
+</CardGroup>
 
-## Create beautiful pages
+## What Nexus captures
 
-Everything you need to create world-class documentation.
+- `run_id`, `trace_id`, `parent_run_id`, and `user_id`
+- event category (`chain`, `llm`, `tool`, `agent`, `retriever`, and more)
+- name metadata (for model, chain, tool, and agent nodes)
+- JSON payloads for `input`, `output`, and `error`
 
-<Columns cols={2}>
-  <Card
-    title="Write with MDX"
-    icon="pen-fancy"
-    href="/essentials/markdown"
-  >
-    Use MDX to style your docs pages.
-  </Card>
-  <Card
-    title="Code samples"
-    icon="code"
-    href="/essentials/code"
-  >
-    Add sample code to demonstrate how to use your product.
-  </Card>
-  <Card
-    title="Images"
-    icon="image"
-    href="/essentials/images"
-  >
-    Display images and other media.
-  </Card>
-  <Card
-    title="Reusable snippets"
-    icon="recycle"
-    href="/essentials/reusable-snippets"
-  >
-    Write once and reuse across your docs.
-  </Card>
-</Columns>
+This structure lets you reconstruct execution trees after a run and debug both failed and successful paths.
 
-## Need inspiration?
+## Choose your tracing path
 
-<Card
-  title="See complete examples"
-  icon="stars"
-  href="https://mintlify.com/customers"
->
-  Browse our showcase of exceptional documentation sites.
-</Card>
+<CardGroup cols={2}>
+  <Card title="I use LangChain" icon="wand-magic-sparkles" href="/guides/langchain">
+    Plug in a callback and collect traces with minimal code changes.
+  </Card>
+  <Card title="I need full control" icon="route" href="/guides/manual-tracing">
+    Add spans exactly where your app does meaningful work.
+  </Card>
+</CardGroup>
+
+<Tip>
+  Your Nexus API key (`nexus_api_key`) is available on the [Nexus platform](https://nexus-ba-platform.vercel.app/).
+</Tip>

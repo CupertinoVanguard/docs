@@ -1,0 +1,62 @@
+---
+title: "Manual tracing"
+description: "Instrument custom Python code with Nexus NexusClient and spans"
+---
+
+Use manual tracing when you need explicit control over what gets logged and when.
+
+## How it works
+
+- Create one `NexusClient` per request or workflow.
+- Create nested spans with `client.span(...)`.
+- Set outputs or errors on spans.
+- Call `client.flush()` to persist buffered events.
+
+## Minimal example
+
+```python
+from uuid import uuid4
+from nexus_library.nexus_core import NexusClient
+
+client = NexusClient(api_key=str(uuid4()), db_url="postgresql://user:pass@host/db")
+
+with client.span("orchestrator", event_type="chain", input_data={"task": "summarize"}) as root:
+    with client.span("retrieve-docs", event_type="retriever", input_data={"k": 5}) as retrieve_span:
+        retrieve_span.set_output({"hits": 5})
+
+    with client.span("generate-answer", event_type="llm", input_data={"model": "gpt-4.1"}) as llm_span:
+        llm_span.set_output({"text": "Final answer"})
+
+    root.set_output({"status": "ok"})
+
+client.flush()
+```
+
+## Span behavior
+
+- A span gets a generated `run_id`.
+- The active parent span becomes `parent_run_id` for children.
+- Exceptions inside `with client.span(...)` mark the span as errored.
+- Exceptions are re-raised after logging because span context managers do not suppress them.
+
+## Choosing `event_type`
+
+Use categories that map to your architecture:
+
+- `chain`
+- `llm`
+- `chat_model`
+- `tool`
+- `agent`
+- `retriever`
+- `text`
+- `retry`
+
+## Common pitfalls
+
+<Warning>
+  `NexusClient(api_key=...)` converts strings into `uuid.UUID`. If your API key is not UUID-formatted, initialization fails.
+</Warning>
+
+- Forgetting to call `flush()` means events stay in memory.
+- Passing non-JSON-serializable objects is allowed, but they are converted to strings.

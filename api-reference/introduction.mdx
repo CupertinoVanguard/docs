@@ -1,33 +1,37 @@
 ---
 title: 'Introduction'
-description: 'Example section for showcasing API endpoints'
+description: 'Python API surface for Nexus instrumentation'
 ---
 
-<Note>
-  If you're not looking to build API reference documentation, you can delete
-  this section by removing the api-reference folder.
-</Note>
+Nexus exposes a Python-first API for trace logging.
 
-## Welcome
+## Core modules
 
-There are two ways to build API documentation: [OpenAPI](https://mintlify.com/docs/api-playground/openapi/setup) and [MDX components](https://mintlify.com/docs/api-playground/mdx/configuration). For the starter kit, we are using the following OpenAPI specification.
+- `NexusClient` and `Span` for manual instrumentation.
+- `PrintingHandler` for LangChain callback instrumentation.
+- `config` helpers for DB and trigger URLs.
 
-<Card
-  title="Plant Store Endpoints"
-  icon="leaf"
-  href="https://github.com/mintlify/starter/blob/main/api-reference/openapi.json"
->
-  View the OpenAPI specification file
-</Card>
+## Data model written to storage
 
-## Authentication
+Both manual spans and LangChain callbacks map to rows with these key fields:
 
-All API endpoints are authenticated using Bearer tokens and picked up from the specification file.
+- `run_id`
+- `user_id`
+- `trace_id`
+- `parent_run_id`
+- `event_type`
+- `name`
+- `input`
+- `output`
+- `error`
 
-```json
-"security": [
-  {
-    "bearerAuth": []
-  }
-]
-```
+## Reference pages
+
+<CardGroup cols={2}>
+  <Card title="NexusClient + Span" icon="square-code" href="/api-reference/python-client">
+    Constructor behavior, span lifecycle, flush, and tree helpers.
+  </Card>
+  <Card title="PrintingHandler" icon="brain" href="/api-reference/langchain-handler">
+    Callback hooks, event mapping, and root-chain trigger behavior.
+  </Card>
+</CardGroup>

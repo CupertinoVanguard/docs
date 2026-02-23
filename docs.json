@@ -1,13 +1,16 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
-  "name": "Mint Starter Kit",
+  "name": "Nexus",
   "colors": {
-    "primary": "#16A34A",
-    "light": "#07C983",
-    "dark": "#15803D"
+    "primary": "#1E3A8A",
+    "light": "#4169E1",
+    "dark": "#1E3A8A"
   },
-  "favicon": "/favicon.svg",
+  "modeToggle": {
+    "default": "dark"
+  },
+  "favicon": "/icon.png",
   "navigation": {
     "tabs": [
       {
@@ -17,32 +20,22 @@
             "group": "Getting started",
             "pages": [
               "index",
-              "quickstart",
-              "development"
+              "quickstart"
             ]
           },
           {
-            "group": "Customization",
+            "group": "Instrumentation",
             "pages": [
-              "essentials/settings",
-              "essentials/navigation"
+              "guides/manual-tracing",
+              "guides/langchain",
+              "guides/tree-inspection"
             ]
           },
           {
-            "group": "Writing content",
+            "group": "Configuration",
             "pages": [
-              "essentials/markdown",
-              "essentials/code",
-              "essentials/images",
-              "essentials/reusable-snippets"
-            ]
-          },
-          {
-            "group": "AI tools",
-            "pages": [
-              "ai-tools/cursor",
-              "ai-tools/claude-code",
-              "ai-tools/windsurf"
+              "guides/configuration",
+              "guides/production-checklist"
             ]
           }
         ]
@@ -51,18 +44,11 @@
         "tab": "API reference",
         "groups": [
           {
-            "group": "API documentation",
+            "group": "Python reference",
             "pages": [
-              "api-reference/introduction"
-            ]
-          },
-          {
-            "group": "Endpoint examples",
-            "pages": [
-              "api-reference/endpoint/get",
-              "api-reference/endpoint/create",
-              "api-reference/endpoint/delete",
-              "api-reference/endpoint/webhook"
+              "api-reference/introduction",
+              "api-reference/python-client",
+              "api-reference/langchain-handler"
             ]
           }
         ]
@@ -71,14 +57,14 @@
     "global": {
       "anchors": [
         {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
+          "anchor": "PyPI",
+          "href": "https://pypi.org/project/nexus-library/",
+          "icon": "package"
         },
         {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
+          "anchor": "Platform",
+          "href": "https://nexus-ba-platform.vercel.app/",
+          "icon": "globe"
         }
       ]
     }
@@ -90,14 +76,14 @@
   "navbar": {
     "links": [
       {
-        "label": "Support",
-        "href": "mailto:hi@mintlify.com"
+        "label": "Platform",
+        "href": "https://nexus-ba-platform.vercel.app/"
       }
     ],
     "primary": {
       "type": "button",
-      "label": "Dashboard",
-      "href": "https://dashboard.mintlify.com"
+      "label": "Get API Key",
+      "href": "https://nexus-ba-platform.vercel.app/"
     }
   },
   "contextual": {
@@ -112,11 +98,5 @@
      "vscode"
    ]
   },
-  "footer": {
-    "socials": {
-      "x": "https://x.com/mintlify",
-      "github": "https://github.com/mintlify",
-      "linkedin": "https://linkedin.com/company/mintlify"
-    }
-  }
+  "footer": {}
 }

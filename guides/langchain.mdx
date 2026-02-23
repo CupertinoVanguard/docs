@@ -1,0 +1,54 @@
+---
+title: "LangChain integration"
+description: "Trace LangChain chains, tools, agents, and retrievers with Nexus"
+---
+
+Use `PrintingHandler` to capture LangChain callback events without manually instrumenting every call site.
+
+## Set up the handler
+
+```python
+from nexus_library.nexus_core import NexusClient
+from nexus_library.langchain import PrintingHandler
+
+nexus_key = "your_nexus_api_key"
+nexus_client = NexusClient(api_key=nexus_key)
+callback_handler = PrintingHandler(nexus_client)
+```
+
+Attach `callback_handler` to your runnable or agent callback configuration.
+
+## What gets logged
+
+The handler listens to standard callback hooks, including:
+
+- LLM and chat model lifecycle (`start`, `end`, `error`)
+- chain lifecycle (`start`, `end`, `error`)
+- tool lifecycle (`start`, `end`, `error`)
+- agent actions and finish events
+- retriever lifecycle (`start`, `end`, `error`)
+- text and retry events
+
+Each event is persisted with parent linkage so you can reconstruct execution trees.
+
+## Event category mapping
+
+The handler normalizes callback names into category-style `event_type` values.  
+Example: `llm_start` and `llm_end` are stored as `llm`.
+
+## Root-chain trigger behavior
+
+When a root chain ends (or errors), the handler can trigger:
+
+- `POST {trigger_url}/catch_route_manual`
+- query params: `user_id` and `trace_id`
+
+Set `dev_mode=True` to disable this external trigger while testing locally.
+
+Get your `nexus_api_key` from the Nexus platform: [Nexus platform](https://nexus-ba-platform.vercel.app/).
+
+## Best practices
+
+- Reuse one `NexusClient` for one logical run.
+- Keep `dev_mode=True` in local and CI environments.
+- Treat trigger endpoints as production infrastructure and monitor failures.

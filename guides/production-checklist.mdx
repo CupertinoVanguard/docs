@@ -1,0 +1,33 @@
+---
+title: "Production checklist — Nexus"
+description: "Harden Nexus tracing before shipping"
+---
+
+Use this checklist before enabling tracing in production systems.
+
+## Runtime safety
+
+- ensure `api_key` values are valid UUID strings
+- keep payload size bounded before logging `input` and `output`
+- avoid logging raw secrets, tokens, or PII
+- apply timeout and retry strategy to any external trigger endpoint
+
+## Data layer
+
+- provision `agent_logs` with indexes for `user_id`, `trace_id`, and `parent_run_id`
+- configure DB connection limits for your request volume
+- monitor write failures from psycopg connection attempts
+- set retention policies for trace data
+
+## LangChain behavior
+
+- keep `dev_mode=True` outside production if trigger calls are not desired
+- document callback attachment points in your app architecture
+- verify root chain events are consistently produced in your chains
+
+## Observability
+
+- alert on sustained insert failures
+- sample event volumes per trace
+- track average and p95 trace depth
+- define dashboards for error-heavy event categories

@@ -1,0 +1,52 @@
+---
+title: "NexusClient and Span"
+description: "Nexus reference for manual tracing primitives"
+---
+
+## `NexusClient(api_key: str, db_url: Optional[str] = None)`
+
+Creates a client for manual instrumentation.
+
+- `api_key`: parsed as UUID and stored as `user_id`
+- `trace_id`: generated once during client creation
+- `db_url`: optional override; otherwise uses config helper lookup
+
+In your app code, `api_key` is your Nexus platform `nexus_api_key`.
+
+## `client.span(name: str, event_type: str, input_data=None) -> Span`
+
+Creates a nested span context manager.
+
+- tracks parent/child relationships automatically
+- buffers events in memory until `flush()`
+
+## `Span.set_output(output)`
+
+Stores output payload for the span before it closes.
+
+## `Span.set_error(error)`
+
+Sets explicit error metadata and marks span status as error.
+
+## `client.flush()`
+
+Persists buffered events to PostgreSQL `agent_logs`.
+
+- writes one event row per span
+- clears in-memory event buffer after successful loop
+
+## `client.get_all_events(trace_id: Optional[str] = None) -> list[dict]`
+
+Reads stored events for the current `user_id` and selected trace.
+
+## `client.print_tree_structure(trace_id: Optional[str] = None)`
+
+Prints an event tree in terminal.
+
+## `client.build_tree_data_from_events(trace_id: Optional[str] = None) -> dict`
+
+Builds tree-shaped data keyed by `run_id`.
+
+## `client.get_trace_tree_string(trace_id: Optional[str] = None) -> str`
+
+Returns an LLM-friendly string representation of trace structure.
