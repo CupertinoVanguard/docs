@@ -5,15 +5,23 @@ description: "Install Nexus and emit your first trace"
 
 ## Install
 
+**LangChain integration**
+
 ```bash
-pip install nexus-library
+pip install nexus-library[langchain]
+```
+
+**OpenAI Agents SDK integration**
+
+```bash
+pip install nexus-library[openai]
 ```
 
 ## Get your Nexus API key
 
 Create or sign in to the Nexus platform and copy your `nexus_api_key`:
 
-- [Nexus platform](https://nexus-ba-platform.vercel.app/)
+- [Nexus platform](https://app.trynexus.io)
 
 In examples below, `nexus_key` means your `nexus_api_key`.
 
@@ -40,14 +48,39 @@ client.flush()
 
 ```python
 from nexus_library.nexus_core import NexusClient
-from nexus_library.langchain import PrintingHandler
+from nexus_library.langchain import LangHandler
 
 nexus_key = "your_nexus_api_key"
 nexus_client = NexusClient(api_key=nexus_key)
-callback_handler = PrintingHandler(nexus_client)
+callback_handler = LangHandler(nexus_client)
 
 # Attach `callback_handler` to your LangChain runnable / agent callbacks
 ```
+
+## Add OpenAI Agents SDK tracing
+
+```python
+import asyncio
+import os
+from agents import Agent, Runner, set_trace_processors
+from nexus_library.nexus_core import NexusClient
+from nexus_library.openai import NexusOpenAITracingProcessor
+
+nexus_client = NexusClient(api_key=os.environ["NEXUS_API_KEY"])
+dev_mode = os.getenv("NEXUS_DEV_MODE", "false").lower() == "true"
+tracing_processor = NexusOpenAITracingProcessor(nexus_client, dev_mode=dev_mode)
+
+set_trace_processors([tracing_processor])
+
+async def main():
+    agent = Agent(name="my-agent", instructions="You are a helpful assistant.")
+    result = await Runner.run(agent, "Hello!")
+    print(result.final_output)
+
+asyncio.run(main())
+```
+
+Set `NEXUS_DEV_MODE=true` locally to disable external triggers. Set it to `false` (or omit it) in production.
 
 ## Verify the trace exists
 
@@ -65,6 +98,9 @@ After your run finishes:
   </Card>
   <Card title="LangChain guide" icon="brain" href="/guides/langchain">
     Understand callback lifecycle and event categories.
+  </Card>
+  <Card title="OpenAI Agents SDK guide" icon="robot" href="/guides/openai">
+    Trace OpenAI agents with NexusOpenAITracingProcessor.
   </Card>
   <Card title="Configuration" icon="sliders" href="/guides/configuration">
     Set DB URLs and trigger endpoints safely.

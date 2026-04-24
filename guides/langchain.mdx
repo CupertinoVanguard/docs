@@ -3,17 +3,23 @@ title: "LangChain integration"
 description: "Trace LangChain chains, tools, agents, and retrievers with Nexus"
 ---
 
-Use `PrintingHandler` to capture LangChain callback events without manually instrumenting every call site.
+Use `LangHandler` to capture LangChain callback events without manually instrumenting every call site.
+
+## Install
+
+```bash
+pip install nexus-library[langchain]
+```
 
 ## Set up the handler
 
 ```python
 from nexus_library.nexus_core import NexusClient
-from nexus_library.langchain import PrintingHandler
+from nexus_library.langchain import LangHandler
 
 nexus_key = "your_nexus_api_key"
 nexus_client = NexusClient(api_key=nexus_key)
-callback_handler = PrintingHandler(nexus_client)
+callback_handler = LangHandler(nexus_client)
 ```
 
 Attach `callback_handler` to your runnable or agent callback configuration.
@@ -45,7 +51,7 @@ When a root chain ends (or errors), the handler can trigger:
 
 Set `dev_mode=True` to disable this external trigger while testing locally.
 
-Get your `nexus_api_key` from the Nexus platform: [Nexus platform](https://nexus-ba-platform.vercel.app/).
+Get your `nexus_api_key` from the Nexus platform: [Nexus platform](https://app.trynexus.io).
 
 ## Best practices
 

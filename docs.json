@@ -28,6 +28,7 @@
             "pages": [
               "guides/manual-tracing",
               "guides/langchain",
+              "guides/openai",
               "guides/tree-inspection"
             ]
           },
@@ -57,13 +58,8 @@
     "global": {
       "anchors": [
         {
-          "anchor": "PyPI",
-          "href": "https://pypi.org/project/nexus-library/",
-          "icon": "package"
-        },
-        {
           "anchor": "Platform",
-          "href": "https://nexus-ba-platform.vercel.app/",
+          "href": "https://app.trynexus.io",
           "icon": "globe"
         }
       ]
@@ -77,13 +73,13 @@
     "links": [
       {
         "label": "Platform",
-        "href": "https://nexus-ba-platform.vercel.app/"
+        "href": "https://app.trynexus.io"
       }
     ],
     "primary": {
       "type": "button",
       "label": "Get API Key",
-      "href": "https://nexus-ba-platform.vercel.app/"
+      "href": "https://app.trynexus.io"
     }
   },
   "contextual": {

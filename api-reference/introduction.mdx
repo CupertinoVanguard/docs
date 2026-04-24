@@ -8,7 +8,7 @@ Nexus exposes a Python-first API for trace logging.
 ## Core modules
 
 - `NexusClient` and `Span` for manual instrumentation.
-- `PrintingHandler` for LangChain callback instrumentation.
+- `LangHandler` for LangChain callback instrumentation.
 - `config` helpers for DB and trigger URLs.
 
 ## Data model written to storage
@@ -31,7 +31,7 @@ Both manual spans and LangChain callbacks map to rows with these key fields:
   <Card title="NexusClient + Span" icon="square-code" href="/api-reference/python-client">
     Constructor behavior, span lifecycle, flush, and tree helpers.
   </Card>
-  <Card title="PrintingHandler" icon="brain" href="/api-reference/langchain-handler">
+  <Card title="LangHandler" icon="brain" href="/api-reference/langchain-handler">
     Callback hooks, event mapping, and root-chain trigger behavior.
   </Card>
 </CardGroup>

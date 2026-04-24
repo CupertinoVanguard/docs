@@ -1,0 +1,89 @@
+---
+title: "OpenAI Agents SDK integration"
+description: "Trace OpenAI agents with Nexus using NexusOpenAITracingProcessor"
+---
+
+Use `NexusOpenAITracingProcessor` to capture every span emitted by the OpenAI Agents SDK and send it to Nexus automatically.
+
+## Install
+
+```bash
+pip install nexus-library[openai]
+```
+
+## Set up the processor
+
+```python
+import asyncio
+import os
+from agents import Agent, Runner, set_trace_processors
+from nexus_library.nexus_core import NexusClient
+from nexus_library.openai import NexusOpenAITracingProcessor
+
+nexus_client = NexusClient(api_key=os.environ["NEXUS_API_KEY"])
+dev_mode = os.getenv("NEXUS_DEV_MODE", "false").lower() == "true"
+tracing_processor = NexusOpenAITracingProcessor(nexus_client, dev_mode=dev_mode)
+
+set_trace_processors([tracing_processor])
+```
+
+Register the processor once at startup before any agents run. All subsequent `Runner.run` calls in the process are captured automatically.
+
+## Environment variables
+
+| Variable | Values | Behavior |
+|---|---|---|
+| `NEXUS_API_KEY` | your API key | Authenticates the Nexus client |
+| `NEXUS_DEV_MODE` | `true` | Disables external trigger POST — use locally and in CI |
+| `NEXUS_DEV_MODE` | `false` (default) | Fires the trigger endpoint — use in production |
+
+## Full example
+
+```python
+import asyncio
+import os
+from agents import Agent, Runner, set_trace_processors, function_tool
+from dotenv import load_dotenv
+from nexus_library.nexus_core import NexusClient
+from nexus_library.openai import NexusOpenAITracingProcessor
+
+load_dotenv()
+
+nexus_client = NexusClient(api_key=os.environ["NEXUS_API_KEY"])
+dev_mode = os.getenv("NEXUS_DEV_MODE", "false").lower() == "true"
+tracing_processor = NexusOpenAITracingProcessor(nexus_client, dev_mode=dev_mode)
+
+set_trace_processors([tracing_processor])
+
+
+@function_tool
+def hello_world():
+    """Prints 'Hello, world!' to the console."""
+    print("Hello, world!")
+
+
+async def main():
+    agent = Agent(
+        name="my-agent",
+        tools=[hello_world],
+        instructions="You are a helpful assistant.",
+    )
+    result = await Runner.run(agent, "Say hello.")
+    print(result.final_output)
+
+
+asyncio.run(main())
+```
+
+## Dev vs production
+
+- **Development** — set `NEXUS_DEV_MODE=true` in your `.env` file. The processor records traces locally without firing the external trigger endpoint.
+- **Production** — set `NEXUS_DEV_MODE=false` (or leave it unset). The processor fires `POST {trigger_url}/catch_route_manual` with `user_id` and `trace_id` after each root span completes.
+
+## Best practices
+
+- Store `NEXUS_API_KEY` in environment variables — never hardcode it.
+- Reuse one `NexusClient` for the lifetime of the process.
+- Call `set_trace_processors` once at startup, before any `Runner.run` calls.
+
+Get your `nexus_api_key` from the Nexus platform: [Nexus platform](https://app.trynexus.io).
